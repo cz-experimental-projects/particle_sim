@@ -1,6 +1,7 @@
 pub mod gui;
 mod types;
 
+use std::sync::mpsc;
 use egui;
 use wgpu;
 use winit;
@@ -452,9 +453,11 @@ pub trait Renderer {
     fn gui(&mut self, ctx: &egui::Context);
 }
 
-pub fn run<R>(window_mode: WindowMode, window_title: &'static str, view_size: f32) where R: Renderer + 'static,
+pub fn run<R>(window_mode: WindowMode, window_title: &'static str, view_size: f32)
+    where R: Renderer + 'static,
 {
     env_logger::init();
+    let (sender, receiver) = mpsc::sync_channel::<()>(0);
 
     thread::spawn(move || {
         let event_loop = EventLoopBuilder::new()
@@ -486,8 +489,10 @@ pub fn run<R>(window_mode: WindowMode, window_title: &'static str, view_size: f3
         let mut state = pollster::block_on(State::new(window, view_size));
         let mut renderer = R::new();
         let mut render_ctx = RenderContext::new();
-        let mut instant = Instant::now();
-
+        let instant = Instant::now();
+        
+        sender.send(()).unwrap();
+        
         event_loop.run(move |event, _, control_flow| {
             let elapsed = instant.elapsed();
 
@@ -526,8 +531,9 @@ pub fn run<R>(window_mode: WindowMode, window_title: &'static str, view_size: f3
                 }
                 _ => {}
             }
-
-            instant = Instant::now();
         });
     });
+    
+    // block until renderer finish initializing
+    receiver.recv().unwrap();
 }

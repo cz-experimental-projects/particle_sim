@@ -1,7 +1,7 @@
-use std::time::Instant;
+use std::time::Duration;
+use crate::PARTICLES;
 
 pub(crate) struct Simulation {
-
 }
 
 impl Simulation {
@@ -9,6 +9,10 @@ impl Simulation {
         Self {}
     }
 
-    pub fn run(&self, elapsed: Instant) {
+    pub fn run(&self, elapsed: Duration, delta: f32) {
+        for particle in PARTICLES.iter() {
+            let mut particle = particle.write().unwrap();
+            particle.pos.y -= delta * 10.;
+        }
     }
 }

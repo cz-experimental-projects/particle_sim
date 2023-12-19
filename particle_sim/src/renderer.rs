@@ -19,8 +19,8 @@ impl quarkstrom::Renderer for Renderer {
     fn render(&mut self, ctx: &mut RenderContext, _elapsed: &Duration) {
         ctx.clear_circles();
 
-        let particles = PARTICLES.read().unwrap();
-        for entity in particles.iter() {
+        for entity in PARTICLES.iter() {
+            let entity = entity.read().unwrap();
             ctx.draw_circle(entity.pos, entity.size, entity.col);
         }
     }
