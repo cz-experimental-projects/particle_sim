@@ -21,7 +21,7 @@ impl quarkstrom::Renderer for Renderer {
 
         for entity in PARTICLES.iter() {
             let entity = entity.read().unwrap();
-            ctx.draw_circle(entity.pos, entity.size, entity.col);
+            ctx.draw_circle(entity.pos, entity.radius, entity.col);
         }
     }
 

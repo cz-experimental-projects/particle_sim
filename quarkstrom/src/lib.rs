@@ -512,7 +512,7 @@ pub fn run<R>(window_mode: WindowMode, window_title: &'static str, view_size: f3
                     renderer.input(&state.input, &elapsed);
                     renderer.render(&mut render_ctx, &elapsed);
 
-                    // TODO: Could be in a need to set basis (optimization)
+                    // TODO: Could be in a need-to-set basis (optimization)
                     state.set_instances(&render_ctx.circles);
                     state.set_vertices(&render_ctx.lines);
 
